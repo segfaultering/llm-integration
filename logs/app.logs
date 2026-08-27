@@ -1,0 +1,140 @@
+INFO:google_genai.models:AFC is enabled with max remote calls: 10.
+WARNING:google_genai.models:Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+DEBUG:httpcore.connection:connect_tcp.started host='generativelanguage.googleapis.com' port=443 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x789b80cee270>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x789b80cdd8d0> server_hostname='generativelanguage.googleapis.com' timeout=None
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x789b80e53710>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'X-Gemini-Service-Tier', b'standard'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'Date', b'Thu, 27 Aug 2026 19:27:19 GMT'), (b'Server', b'scaffolding on HTTPServer2'), (b'X-XSS-Protection', b'0'), (b'X-Frame-Options', b'SAMEORIGIN'), (b'X-Content-Type-Options', b'nosniff'), (b'Server-Timing', b'gfet4t7; dur=2014'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+INFO:google_genai.models:AFC is enabled with max remote calls: 10.
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'X-Gemini-Service-Tier', b'standard'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'Date', b'Thu, 27 Aug 2026 19:27:21 GMT'), (b'Server', b'scaffolding on HTTPServer2'), (b'X-XSS-Protection', b'0'), (b'X-Frame-Options', b'SAMEORIGIN'), (b'X-Content-Type-Options', b'nosniff'), (b'Server-Timing', b'gfet4t7; dur=1597'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+INFO:httpx:HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+ERROR:llm_integration.llm.service: 
+                    USER_PROMPT:
+ 
+        # ORIGINAL SYSTEM PROMPT
+
+        # JOB & ROLE
+You classify the sentiment of textual input.
+
+# Output Shape
+{ 
+    "sentiment": one of [positive|negative|neutral|unsure],
+    "confidence": 0.0-1.0,
+    "second_best" "The second best guess for the sentiment"
+    "reason": "A small sentence."
+}
+
+# Rules
+- NEVER invent a new category.
+- NEVER invent a category.
+- NEVER add a fields.
+- NEVER violate the contraint ranges for each field.
+- NEVER return the non-structured object.
+- The values for the "sentiment" and "second_best" field should ALWAYS differ. You should NEVER have a case where the classified sentiment and the second best guess are the same.
+- ALWAYS keep the value for the "reason" field clear and concise. 
+- ALWAYS return JUST the JSON structured output. Nothing more, nothing less. 
+
+# Examples
+
+## Example 1: A typical case 
+
+### Input
+{
+    "text": "I fell in love with basketball when I was about 15. Makes me happy just thinking about stepping on a court, man, I love the game."
+}
+
+### Output
+{
+    "sentiment": "positive",
+    "confidence": 0.97,
+    "second_best": "neutral",
+    "reason": "The text contains explicit expressions of affection ('fell in love', 'happy', 'love the game') toward basketball" 
+}
+
+## Example 2: A neutral case 
+
+### Input
+{
+    "text": "For a while now, the shops in the city have been closing down earlier in the evening due to some new law passed by the governer."
+}
+
+### Output
+{
+    "sentiment": "neutral",
+    "confidence": 0.83,
+    "second_best": "negative",
+    "reason": "The sentence presents a factual statement about store hours and laws without expressing personal emotion."
+}
+
+## Example 3: An ambiguous case
+
+### Input
+{
+    "text": "Running a hospital seems like so much fun. The constantly visible sick and near-death patients really helps keep you grounded.
+}
+
+### Output
+{
+    "sentiment": "unsure",
+    "confidence": 0.4,
+    "second_best": "positive",
+    "reason": "Tone is ambiguous due to potential sarcasm, mixing positive phrases with distressing themes."
+}
+
+
+        # ORIGINAL USER PROMPT
+
+        I adore the McDonald's parking lot.
+
+        # ERROR
+
+        1 validation error for ClfResp
+reason
+  String should have at most 16 characters [type=string_too_long, input_value="The user explicitly uses...gs toward the location.", input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long
+    
+SYS_PROMPT:
+
+        Your previous answer was rejected for this reason. 
+        Make the necessary corrections, and produce the correct output.
+    
+OUTPUT:
+{
+    "sentiment": "positive",
+    "confidence": 0.95,
+    "second_best": "neutral",
+    "reason": "The user expresses clear affection for the location."
+}
+                
+Traceback (most recent call last):
+  File "/home/mohsin/Projects/llm-integration/src/llm_integration/llm/service.py", line 53, in process
+    return ClfResp.model_validate_json(repair_resp.text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mohsin/Projects/llm-integration/.venv/lib/python3.12/site-packages/pydantic/main.py", line 782, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ClfResp
+reason
+  String should have at most 16 characters [type=string_too_long, input_value='The user expresses clear...ction for the location.', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/string_too_long
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete

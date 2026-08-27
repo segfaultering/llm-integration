@@ -5,7 +5,7 @@ from fastapi import Depends
 from google.genai import Client
 
 from llm_integration.config import settings
-from llm_integration.llm import GeminiLlmService, StubLlmService
+from llm_integration.llm.service import GeminiLlmService, StubLlmService
 
 
 def get_llm() -> Iterator[Client]:

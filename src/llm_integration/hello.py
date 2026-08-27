@@ -10,4 +10,4 @@ with Client() as client:
         config=types.GenerateContentConfig(temperature=0, top_p=0.95, top_k=20),
     )
 
-print(response)
+print(response.text)
